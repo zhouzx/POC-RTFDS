@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransactionRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tran-integrator</a> &gt; <a href="index.source.html" class="el_package">com.zzx.fraud.integrator.model</a> &gt; <span class="el_source">TransactionRequest.java</span></div><h1>TransactionRequest.java</h1><pre class="source lang-java linenums">package com.zzx.fraud.integrator.model;
+
+import java.time.LocalDateTime;
+
+<span class="fc" id="L5">public class TransactionRequest {</span>
+    private String transactionId;
+    private double amount;
+    private String accountId;
+    private String merchantId;
+    private String location;
+    private LocalDateTime timestamp;
+    private String ipAddress;
+    private String deviceId;
+
+    // Getters and setters
+    public String getTransactionId() {
+<span class="fc" id="L17">        return transactionId;</span>
+    }
+
+    public void setTransactionId(String transactionId) {
+<span class="fc" id="L21">        this.transactionId = transactionId;</span>
+<span class="fc" id="L22">    }</span>
+
+    public double getAmount() {
+<span class="fc" id="L25">        return amount;</span>
+    }
+
+    public void setAmount(double amount) {
+<span class="fc" id="L29">        this.amount = amount;</span>
+<span class="fc" id="L30">    }</span>
+
+    public String getAccountId() {
+<span class="fc" id="L33">        return accountId;</span>
+    }
+
+    public void setAccountId(String accountId) {
+<span class="fc" id="L37">        this.accountId = accountId;</span>
+<span class="fc" id="L38">    }</span>
+
+    public String getMerchantId() {
+<span class="fc" id="L41">        return merchantId;</span>
+    }
+
+    public void setMerchantId(String merchantId) {
+<span class="fc" id="L45">        this.merchantId = merchantId;</span>
+<span class="fc" id="L46">    }</span>
+
+    public String getLocation() {
+<span class="nc" id="L49">        return location;</span>
+    }
+
+    public void setLocation(String location) {
+<span class="nc" id="L53">        this.location = location;</span>
+<span class="nc" id="L54">    }</span>
+
+    public LocalDateTime getTimestamp() {
+<span class="fc" id="L57">        return timestamp;</span>
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+<span class="fc" id="L61">        this.timestamp = timestamp;</span>
+<span class="fc" id="L62">    }</span>
+
+    public String getIpAddress() {
+<span class="fc" id="L65">        return ipAddress;</span>
+    }
+
+    public void setIpAddress(String ipAddress) {
+<span class="fc" id="L69">        this.ipAddress = ipAddress;</span>
+<span class="fc" id="L70">    }</span>
+
+    public String getDeviceId() {
+<span class="fc" id="L73">        return deviceId;</span>
+    }
+
+    public void setDeviceId(String deviceId) {
+<span class="fc" id="L77">        this.deviceId = deviceId;</span>
+<span class="fc" id="L78">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

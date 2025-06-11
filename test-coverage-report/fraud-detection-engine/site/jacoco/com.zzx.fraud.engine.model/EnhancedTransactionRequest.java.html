@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EnhancedTransactionRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fraud-detection-engine</a> &gt; <a href="index.source.html" class="el_package">com.zzx.fraud.engine.model</a> &gt; <span class="el_source">EnhancedTransactionRequest.java</span></div><h1>EnhancedTransactionRequest.java</h1><pre class="source lang-java linenums">package com.zzx.fraud.engine.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.time.LocalDateTime;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class EnhancedTransactionRequest {
+    private String transactionId;
+    private String accountId;
+    private Double amount;
+    private String currency;
+    private String merchantName;
+    private String merchantCategory;
+    private String ipAddress;
+    private LocalDateTime timestamp;
+    private String deviceId;
+    private String countryCode;
+    private String deviceType;
+    private String channel;
+    
+    // 添加merchantId字段以兼容tran-integrator服务发送的数据
+    private String merchantId;
+
+    // Constructors
+<span class="fc" id="L25">    public EnhancedTransactionRequest() {</span>
+<span class="fc" id="L26">    }</span>
+
+    public EnhancedTransactionRequest(String transactionId, String accountId, Double amount, 
+                                     String currency, String merchantName, String merchantCategory, 
+                                     String ipAddress, LocalDateTime timestamp, String deviceId,
+<span class="nc" id="L31">                                     String countryCode, String deviceType, String channel) {</span>
+<span class="nc" id="L32">        this.transactionId = transactionId;</span>
+<span class="nc" id="L33">        this.accountId = accountId;</span>
+<span class="nc" id="L34">        this.amount = amount;</span>
+<span class="nc" id="L35">        this.currency = currency;</span>
+<span class="nc" id="L36">        this.merchantName = merchantName;</span>
+<span class="nc" id="L37">        this.merchantCategory = merchantCategory;</span>
+<span class="nc" id="L38">        this.ipAddress = ipAddress;</span>
+<span class="nc" id="L39">        this.timestamp = timestamp;</span>
+<span class="nc" id="L40">        this.deviceId = deviceId;</span>
+<span class="nc" id="L41">        this.countryCode = countryCode;</span>
+<span class="nc" id="L42">        this.deviceType = deviceType;</span>
+<span class="nc" id="L43">        this.channel = channel;</span>
+<span class="nc" id="L44">    }</span>
+
+    // Getters and Setters
+    public String getTransactionId() {
+<span class="fc" id="L48">        return transactionId;</span>
+    }
+
+    public void setTransactionId(String transactionId) {
+<span class="fc" id="L52">        this.transactionId = transactionId;</span>
+<span class="fc" id="L53">    }</span>
+
+    public String getAccountId() {
+<span class="fc" id="L56">        return accountId;</span>
+    }
+
+    public void setAccountId(String accountId) {
+<span class="fc" id="L60">        this.accountId = accountId;</span>
+<span class="fc" id="L61">    }</span>
+
+    public Double getAmount() {
+<span class="fc" id="L64">        return amount;</span>
+    }
+
+    public void setAmount(Double amount) {
+<span class="fc" id="L68">        this.amount = amount;</span>
+<span class="fc" id="L69">    }</span>
+
+    public String getCurrency() {
+<span class="nc" id="L72">        return currency;</span>
+    }
+
+    public void setCurrency(String currency) {
+<span class="nc" id="L76">        this.currency = currency;</span>
+<span class="nc" id="L77">    }</span>
+
+    public String getMerchantName() {
+<span class="nc" id="L80">        return merchantName;</span>
+    }
+
+    public void setMerchantName(String merchantName) {
+<span class="nc" id="L84">        this.merchantName = merchantName;</span>
+<span class="nc" id="L85">    }</span>
+    
+    public String getMerchantId() {
+<span class="nc" id="L88">        return merchantId;</span>
+    }
+
+    public void setMerchantId(String merchantId) {
+<span class="nc" id="L92">        this.merchantId = merchantId;</span>
+        // 如果merchantName为空但merchantId不为空，可以将merchantId用作merchantName
+<span class="nc bnc" id="L94" title="All 4 branches missed.">        if (this.merchantName == null &amp;&amp; merchantId != null) {</span>
+<span class="nc" id="L95">            this.merchantName = merchantId;</span>
+        }
+<span class="nc" id="L97">    }</span>
+
+    public String getMerchantCategory() {
+<span class="nc" id="L100">        return merchantCategory;</span>
+    }
+
+    public void setMerchantCategory(String merchantCategory) {
+<span class="nc" id="L104">        this.merchantCategory = merchantCategory;</span>
+<span class="nc" id="L105">    }</span>
+
+    public String getIpAddress() {
+<span class="fc" id="L108">        return ipAddress;</span>
+    }
+
+    public void setIpAddress(String ipAddress) {
+<span class="fc" id="L112">        this.ipAddress = ipAddress;</span>
+<span class="fc" id="L113">    }</span>
+
+    public LocalDateTime getTimestamp() {
+<span class="nc" id="L116">        return timestamp;</span>
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+<span class="nc" id="L120">        this.timestamp = timestamp;</span>
+<span class="nc" id="L121">    }</span>
+
+    public String getDeviceId() {
+<span class="fc" id="L124">        return deviceId;</span>
+    }
+
+    public void setDeviceId(String deviceId) {
+<span class="fc" id="L128">        this.deviceId = deviceId;</span>
+<span class="fc" id="L129">    }</span>
+
+    public String getCountryCode() {
+<span class="fc" id="L132">        return countryCode;</span>
+    }
+
+    public void setCountryCode(String countryCode) {
+<span class="fc" id="L136">        this.countryCode = countryCode;</span>
+<span class="fc" id="L137">    }</span>
+
+    public String getDeviceType() {
+<span class="fc" id="L140">        return deviceType;</span>
+    }
+
+    public void setDeviceType(String deviceType) {
+<span class="fc" id="L144">        this.deviceType = deviceType;</span>
+<span class="fc" id="L145">    }</span>
+
+    public String getChannel() {
+<span class="fc" id="L148">        return channel;</span>
+    }
+
+    public void setChannel(String channel) {
+<span class="fc" id="L152">        this.channel = channel;</span>
+<span class="fc" id="L153">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L157">        return &quot;EnhancedTransactionRequest{&quot; +</span>
+                &quot;transactionId='&quot; + transactionId + '\'' +
+                &quot;, accountId='&quot; + accountId + '\'' +
+                &quot;, amount=&quot; + amount +
+                &quot;, currency='&quot; + currency + '\'' +
+                &quot;, merchantName='&quot; + merchantName + '\'' +
+                &quot;, merchantId='&quot; + merchantId + '\'' +
+                &quot;, merchantCategory='&quot; + merchantCategory + '\'' +
+                &quot;, ipAddress='&quot; + ipAddress + '\'' +
+                &quot;, timestamp=&quot; + timestamp +
+                &quot;, deviceId='&quot; + deviceId + '\'' +
+                &quot;, countryCode='&quot; + countryCode + '\'' +
+                &quot;, deviceType='&quot; + deviceType + '\'' +
+                &quot;, channel='&quot; + channel + '\'' +
+                '}';
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransactionConsumerService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tran-integrator</a> &gt; <a href="index.source.html" class="el_package">com.zzx.fraud.integrator.service</a> &gt; <span class="el_source">TransactionConsumerService.java</span></div><h1>TransactionConsumerService.java</h1><pre class="source lang-java linenums">package com.zzx.fraud.integrator.service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.zzx.fraud.integrator.model.EnhancedTransactionRequest;
+import com.zzx.fraud.integrator.model.FraudDetectionResponse;
+import com.zzx.fraud.integrator.model.TransactionRequest;
+
+@Service
+<span class="nc" id="L14">public class TransactionConsumerService {</span>
+<span class="nc" id="L15">    private static final Logger logger = LoggerFactory.getLogger(TransactionConsumerService.class);</span>
+    
+    @Autowired
+    private TransactionEnhancementService enhancementService;
+    
+    @Autowired
+    private TransactionProducerService producerService;
+    
+    /**
+     * Consume transaction messages from tran-simulator
+     *
+     * @param transaction Original transaction request
+     */
+    @RabbitListener(queues = &quot;${rabbitmq.input.queue}&quot;)
+    public void receiveTransaction(TransactionRequest transaction) {
+<span class="nc" id="L30">        logger.info(&quot;Received transaction message: {}&quot;, transaction.getTransactionId());</span>
+        
+        try {
+            // Enhance transaction data
+<span class="nc" id="L34">            EnhancedTransactionRequest enhancedTransaction = enhancementService.enhanceTransaction(transaction);</span>
+            
+            // Send enhanced transaction data to fraud-detection-engine and get fraud detection result
+<span class="nc" id="L37">            FraudDetectionResponse fraudResponse = producerService.sendToFraudDetectionEngine(enhancedTransaction);</span>
+            
+<span class="nc bnc" id="L39" title="All 2 branches missed.">            if (fraudResponse != null) {</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">                if (fraudResponse.isFraudulent()) {</span>
+<span class="nc" id="L41">                    logger.warn(&quot;Transaction marked as fraudulent: {}, Triggered Rules: {}&quot;,</span>
+<span class="nc" id="L42">                            transaction.getTransactionId(),</span>
+<span class="nc" id="L43">                            fraudResponse.getTriggeredRules());</span>
+                } else {
+<span class="nc" id="L45">                    logger.info(&quot;Transaction normal: {}&quot;,</span>
+<span class="nc" id="L46">                            transaction.getTransactionId());</span>
+                }
+            } else {
+<span class="nc" id="L49">                logger.warn(&quot;No fraud detection result received: {}&quot;, transaction.getTransactionId());</span>
+            }
+            
+<span class="nc" id="L52">            logger.info(&quot;Transaction processing completed: {}&quot;, transaction.getTransactionId());</span>
+<span class="nc" id="L53">        } catch (Exception e) {</span>
+<span class="nc" id="L54">            logger.error(&quot;Error processing transaction: {}, Error: {}&quot;, transaction.getTransactionId(), e.getMessage(), e);</span>
+<span class="nc" id="L55">        }</span>
+<span class="nc" id="L56">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

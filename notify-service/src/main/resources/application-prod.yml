@@ -1,0 +1,56 @@
+server:
+  port: ${SERVER_PORT:8081}
+  shutdown: graceful
+
+spring:
+  application:
+    name: notification-service
+  
+  # Graceful shutdown
+  lifecycle:
+    timeout-per-shutdown-phase: ${SPRING_LIFECYCLE_TIMEOUT_PER_SHUTDOWN_PHASE:20s}
+    
+  # Jackson 配置 - 忽略未知属性
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: false
+
+# Actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE:health,info,metrics}
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true 
+
+# Notification settings
+notification:
+  # Email settings
+  email:
+    enabled: ${NOTIFICATION_EMAIL_ENABLED:false}
+    from: ${NOTIFICATION_EMAIL_FROM:noreply@example.com}
+    smtp-host: ${NOTIFICATION_EMAIL_SMTP_HOST:smtp.example.com}
+    smtp-port: ${NOTIFICATION_EMAIL_SMTP_PORT:587}
+    username: ${NOTIFICATION_EMAIL_USERNAME:user}
+    password: ${NOTIFICATION_EMAIL_PASSWORD:password}
+  
+  # SMS settings
+  sms:
+    enabled: ${NOTIFICATION_SMS_ENABLED:false}
+    api-key: ${NOTIFICATION_SMS_API_KEY:your-api-key}
+    api-secret: ${NOTIFICATION_SMS_API_SECRET:your-api-secret}
+    from-number: ${NOTIFICATION_SMS_FROM_NUMBER:+1234567890}
+  
+  # Fraud engine connection
+  fraud-engine:
+    url: ${FRAUD_ENGINE_URL:http://fraud-detection-engine:8080}
+    endpoint: ${FRAUD_ENGINE_ENDPOINT:/api/fraud/webhook}
+    auth-token: ${FRAUD_ENGINE_AUTH_TOKEN:} 

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FraudDetectionResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fraud-detection-engine</a> &gt; <a href="index.source.html" class="el_package">com.zzx.fraud.engine.model</a> &gt; <span class="el_source">FraudDetectionResponse.java</span></div><h1>FraudDetectionResponse.java</h1><pre class="source lang-java linenums">package com.zzx.fraud.engine.model;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+public class FraudDetectionResponse {
+    private String transactionId;
+    private boolean fraudulent;
+    private List&lt;String&gt; triggeredRules;
+    private LocalDateTime timestamp;
+    private String message;
+    private long processingTimeMs;
+
+    // Constructors
+<span class="fc" id="L16">    public FraudDetectionResponse() {</span>
+<span class="fc" id="L17">        this.triggeredRules = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L18">        this.timestamp = LocalDateTime.now();</span>
+<span class="fc" id="L19">    }</span>
+
+    public FraudDetectionResponse(String transactionId, boolean fraudulent) {
+<span class="fc" id="L22">        this();</span>
+<span class="fc" id="L23">        this.transactionId = transactionId;</span>
+<span class="fc" id="L24">        this.fraudulent = fraudulent;</span>
+<span class="fc" id="L25">    }</span>
+
+    // Getters and Setters
+    public String getTransactionId() {
+<span class="fc" id="L29">        return transactionId;</span>
+    }
+
+    public void setTransactionId(String transactionId) {
+<span class="nc" id="L33">        this.transactionId = transactionId;</span>
+<span class="nc" id="L34">    }</span>
+
+    public boolean isFraudulent() {
+<span class="fc" id="L37">        return fraudulent;</span>
+    }
+
+    public void setFraudulent(boolean fraudulent) {
+<span class="fc" id="L41">        this.fraudulent = fraudulent;</span>
+<span class="fc" id="L42">    }</span>
+
+    public List&lt;String&gt; getTriggeredRules() {
+<span class="fc" id="L45">        return triggeredRules;</span>
+    }
+
+    public void setTriggeredRules(List&lt;String&gt; triggeredRules) {
+<span class="fc" id="L49">        this.triggeredRules = triggeredRules;</span>
+<span class="fc" id="L50">    }</span>
+
+    public void addTriggeredRule(String ruleName) {
+<span class="pc bpc" id="L53" title="1 of 2 branches missed.">        if (this.triggeredRules == null) {</span>
+<span class="nc" id="L54">            this.triggeredRules = new ArrayList&lt;&gt;();</span>
+        }
+<span class="fc" id="L56">        this.triggeredRules.add(ruleName);</span>
+<span class="fc" id="L57">    }</span>
+
+    public LocalDateTime getTimestamp() {
+<span class="nc" id="L60">        return timestamp;</span>
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+<span class="nc" id="L64">        this.timestamp = timestamp;</span>
+<span class="nc" id="L65">    }</span>
+
+    public String getMessage() {
+<span class="fc" id="L68">        return message;</span>
+    }
+
+    public void setMessage(String message) {
+<span class="fc" id="L72">        this.message = message;</span>
+<span class="fc" id="L73">    }</span>
+
+    public long getProcessingTimeMs() {
+<span class="nc" id="L76">        return processingTimeMs;</span>
+    }
+
+    public void setProcessingTimeMs(long processingTimeMs) {
+<span class="fc" id="L80">        this.processingTimeMs = processingTimeMs;</span>
+<span class="fc" id="L81">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L85">        return &quot;FraudDetectionResponse{&quot; +</span>
+                &quot;transactionId='&quot; + transactionId + '\'' +
+                &quot;, fraudulent=&quot; + fraudulent +
+                &quot;, triggeredRules=&quot; + triggeredRules +
+                &quot;, timestamp=&quot; + timestamp +
+                &quot;, message='&quot; + message + '\'' +
+                &quot;, processingTimeMs=&quot; + processingTimeMs +
+                '}';
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,27 @@
+server:
+  port: 8083
+  shutdown: graceful
+
+spring:
+  application:
+    name: notification-service
+  
+  # Graceful shutdown
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+
+# Actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true 

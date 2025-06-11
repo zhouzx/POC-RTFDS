@@ -1,0 +1,136 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tran-simulator
+  labels:
+    app: tran-simulator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tran-simulator
+  template:
+    metadata:
+      labels:
+        app: tran-simulator
+    spec:
+      imagePullSecrets:
+      - name: acr-registry-secret
+      containers:
+      - name: tran-simulator
+        image: crpi-zb9l0odmy4zwf14t-vpc.cn-hangzhou.personal.cr.aliyuncs.com/fraud/tran-simulator:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8083
+        env:
+        - name: SERVER_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: tran-simulator-config
+              key: server.port
+        - name: SPRING_PROFILES_ACTIVE
+          valueFrom:
+            configMapKeyRef:
+              name: tran-simulator-config
+              key: spring.profiles.active
+        - name: JAVA_OPTS
+          valueFrom:
+            configMapKeyRef:
+              name: tran-simulator-java-opts
+              key: JAVA_OPTS
+        - name: SIMULATOR_TRANSACTION_RATE
+          valueFrom:
+            configMapKeyRef:
+              name: tran-simulator-config
+              key: simulator.transaction.rate
+        - name: SIMULATOR_FRAUD_PROBABILITY
+          valueFrom:
+            configMapKeyRef:
+              name: tran-simulator-config
+              key: simulator.fraud.probability
+        - name: SPRING_RABBITMQ_MOCK
+          valueFrom:
+            configMapKeyRef:
+              name: tran-simulator-config
+              key: spring.rabbitmq.mock
+        - name: SPRING_LIFECYCLE_TIMEOUT_PER_SHUTDOWN_PHASE
+          valueFrom:
+            configMapKeyRef:
+              name: tran-simulator-config
+              key: spring.lifecycle.timeout.per.shutdown.phase
+        - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+          valueFrom:
+            configMapKeyRef:
+              name: tran-simulator-config
+              key: management.endpoints.web.exposure.include
+        - name: SPRING_RABBITMQ_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: rabbitmq-cloud-config
+              key: rabbitmq.host
+        - name: SPRING_RABBITMQ_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: rabbitmq-cloud-config
+              key: rabbitmq.port
+        - name: SPRING_RABBITMQ_VIRTUAL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: rabbitmq-cloud-config
+              key: rabbitmq.virtualHost
+        - name: SPRING_RABBITMQ_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-cloud-credentials
+              key: username
+        - name: SPRING_RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-cloud-credentials
+              key: password
+        - name: RABBITMQ_QUEUE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: rabbitmq-cloud-config
+              key: rabbitmq.queue.name
+        - name: RABBITMQ_EXCHANGE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: rabbitmq-cloud-config
+              key: rabbitmq.exchange.name
+        - name: RABBITMQ_ROUTING_KEY
+          valueFrom:
+            configMapKeyRef:
+              name: rabbitmq-cloud-config
+              key: rabbitmq.routing.key
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "300m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8083
+          initialDelaySeconds: 60
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8083
+          initialDelaySeconds: 30
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tran-simulator
+spec:
+  selector:
+    app: tran-simulator
+  ports:
+  - port: 8083
+    targetPort: 8083
+  type: ClusterIP 

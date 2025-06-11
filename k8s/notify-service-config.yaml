@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notify-service-config
+  namespace: fraud-detection
+data:
+  # Service port configuration
+  server.port: "8081"
+  spring.profiles.active: "prod"
+  # Notification settings
+  notification.email.enabled: "false"
+  notification.sms.enabled: "false"
+  # Fraud engine connection
+  fraud.engine.url: "http://fraud-detection-engine:8080"
+  fraud.engine.endpoint: "/api/fraud/webhook"
+  # Lifecycle settings
+  spring.lifecycle.timeout.per.shutdown.phase: "20s"
+  # Management endpoint settings
+  management.endpoints.web.exposure.include: "health,info,metrics"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notify-service-java-opts
+  namespace: fraud-detection
+data:
+  JAVA_OPTS: "-Xms256m -Xmx512m" 

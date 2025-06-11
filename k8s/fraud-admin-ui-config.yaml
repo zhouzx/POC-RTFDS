@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fraud-admin-ui-config
+  namespace: fraud-detection
+data:
+  # UI configuration
+  api.base.url: "http://localhost:8080/api"
+  api.proxy.url: "http://fraud-detection-engine:8080/api/"
+  app.title: "Fraud Detection System" 

@@ -1,0 +1,54 @@
+server:
+  port: ${SERVER_PORT:8082}
+  shutdown: graceful
+
+spring:
+  application:
+    name: transaction-integrator
+  
+  # RabbitMQ Configuration
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    virtual-host: ${RABBITMQ_VIRTUAL_HOST:/}
+    listener:
+      simple:
+        concurrency: 3
+        max-concurrency: 5
+        prefetch: 1
+        default-requeue-rejected: false
+  
+  # Graceful shutdown
+  lifecycle:
+    timeout-per-shutdown-phase: ${SPRING_LIFECYCLE_TIMEOUT_PER_SHUTDOWN_PHASE:20s}
+
+# Actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE:health,info,metrics}
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true 
+
+# Input queue configuration
+rabbitmq:
+  input:
+    queue: ${RABBITMQ_QUEUE_NAME:transactions-queue}
+    exchange: ${RABBITMQ_EXCHANGE_NAME:transactions-exchange}
+    routing-key: ${RABBITMQ_ROUTING_KEY:transactions}
+
+# Fraud Detection Engine REST API configuration
+fraud-detection:
+  url: ${FRAUD_DETECTION_URL:http://fraud-detection-engine:8080/api/fraud/detect}
+  connect-timeout: ${FRAUD_DETECTION_CONNECT_TIMEOUT:5000}
+  read-timeout: ${FRAUD_DETECTION_READ_TIMEOUT:5000} 

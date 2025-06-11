@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FraudDetectionResult.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fraud-detection-engine</a> &gt; <a href="index.source.html" class="el_package">com.zzx.fraud.engine.model</a> &gt; <span class="el_source">FraudDetectionResult.java</span></div><h1>FraudDetectionResult.java</h1><pre class="source lang-java linenums">package com.zzx.fraud.engine.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+@Entity
+@Table(name = &quot;fraud_detection_results&quot;)
+public class FraudDetectionResult {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = &quot;transaction_id&quot;, nullable = false)
+    private String transactionId;
+
+    @Column(name = &quot;account_id&quot;)
+    private String accountId;
+
+    @Column(name = &quot;is_fraudulent&quot;)
+    private boolean isFraudulent;
+
+    @Column(name = &quot;triggered_rules&quot;)
+    private String triggeredRules;
+
+    @Column(name = &quot;processing_time_ms&quot;)
+    private Long processingTimeMs;
+
+    @Column(name = &quot;processed_at&quot;)
+    private LocalDateTime processedAt;
+
+    @Column(name = &quot;transaction_amount&quot;)
+    private Double transactionAmount;
+
+    @Column(name = &quot;ip_address&quot;)
+    private String ipAddress;
+
+    @Column(name = &quot;device_id&quot;)
+    private String deviceId;
+
+    @Column(name = &quot;country_code&quot;)
+    private String countryCode;
+
+    @Column(name = &quot;device_type&quot;)
+    private String deviceType;
+
+    @Column(name = &quot;channel&quot;)
+    private String channel;
+
+    // Constructors
+<span class="fc" id="L56">    public FraudDetectionResult() {</span>
+<span class="fc" id="L57">        this.processedAt = LocalDateTime.now();</span>
+<span class="fc" id="L58">    }</span>
+
+    public FraudDetectionResult(String transactionId, String accountId) {
+<span class="fc" id="L61">        this();</span>
+<span class="fc" id="L62">        this.transactionId = transactionId;</span>
+<span class="fc" id="L63">        this.accountId = accountId;</span>
+<span class="fc" id="L64">    }</span>
+
+    // Getters and Setters
+    public Long getId() {
+<span class="nc" id="L68">        return id;</span>
+    }
+
+    public void setId(Long id) {
+<span class="nc" id="L72">        this.id = id;</span>
+<span class="nc" id="L73">    }</span>
+
+    public String getTransactionId() {
+<span class="nc" id="L76">        return transactionId;</span>
+    }
+
+    public void setTransactionId(String transactionId) {
+<span class="nc" id="L80">        this.transactionId = transactionId;</span>
+<span class="nc" id="L81">    }</span>
+
+    public String getAccountId() {
+<span class="nc" id="L84">        return accountId;</span>
+    }
+
+    public void setAccountId(String accountId) {
+<span class="nc" id="L88">        this.accountId = accountId;</span>
+<span class="nc" id="L89">    }</span>
+
+    @JsonProperty(&quot;fraudulent&quot;)
+    public boolean isFraudulent() {
+<span class="nc" id="L93">        return isFraudulent;</span>
+    }
+
+    @JsonProperty(&quot;fraudulent&quot;)
+    public void setFraudulent(boolean fraudulent) {
+<span class="fc" id="L98">        isFraudulent = fraudulent;</span>
+<span class="fc" id="L99">    }</span>
+
+    public String getTriggeredRules() {
+<span class="nc" id="L102">        return triggeredRules;</span>
+    }
+
+    public void setTriggeredRules(String triggeredRules) {
+<span class="nc" id="L106">        this.triggeredRules = triggeredRules;</span>
+<span class="nc" id="L107">    }</span>
+
+    public Long getProcessingTimeMs() {
+<span class="nc" id="L110">        return processingTimeMs;</span>
+    }
+
+    public void setProcessingTimeMs(Long processingTimeMs) {
+<span class="fc" id="L114">        this.processingTimeMs = processingTimeMs;</span>
+<span class="fc" id="L115">    }</span>
+
+    public LocalDateTime getProcessedAt() {
+<span class="nc" id="L118">        return processedAt;</span>
+    }
+
+    public void setProcessedAt(LocalDateTime processedAt) {
+<span class="nc" id="L122">        this.processedAt = processedAt;</span>
+<span class="nc" id="L123">    }</span>
+
+    public Double getTransactionAmount() {
+<span class="nc" id="L126">        return transactionAmount;</span>
+    }
+
+    public void setTransactionAmount(Double transactionAmount) {
+<span class="fc" id="L130">        this.transactionAmount = transactionAmount;</span>
+<span class="fc" id="L131">    }</span>
+
+    public String getIpAddress() {
+<span class="nc" id="L134">        return ipAddress;</span>
+    }
+
+    public void setIpAddress(String ipAddress) {
+<span class="fc" id="L138">        this.ipAddress = ipAddress;</span>
+<span class="fc" id="L139">    }</span>
+
+    public String getDeviceId() {
+<span class="nc" id="L142">        return deviceId;</span>
+    }
+
+    public void setDeviceId(String deviceId) {
+<span class="fc" id="L146">        this.deviceId = deviceId;</span>
+<span class="fc" id="L147">    }</span>
+
+    public String getCountryCode() {
+<span class="nc" id="L150">        return countryCode;</span>
+    }
+
+    public void setCountryCode(String countryCode) {
+<span class="fc" id="L154">        this.countryCode = countryCode;</span>
+<span class="fc" id="L155">    }</span>
+
+    public String getDeviceType() {
+<span class="nc" id="L158">        return deviceType;</span>
+    }
+
+    public void setDeviceType(String deviceType) {
+<span class="fc" id="L162">        this.deviceType = deviceType;</span>
+<span class="fc" id="L163">    }</span>
+
+    public String getChannel() {
+<span class="nc" id="L166">        return channel;</span>
+    }
+
+    public void setChannel(String channel) {
+<span class="fc" id="L170">        this.channel = channel;</span>
+<span class="fc" id="L171">    }</span>
+
+    // Helper methods
+    public void addTriggeredRule(String ruleName) {
+<span class="pc bpc" id="L175" title="1 of 2 branches missed.">        if (triggeredRules == null) {</span>
+<span class="fc" id="L176">            triggeredRules = ruleName;</span>
+        } else {
+<span class="nc" id="L178">            triggeredRules += &quot;,&quot; + ruleName;</span>
+        }
+<span class="fc" id="L180">    }</span>
+
+    @JsonIgnore
+    public List&lt;String&gt; getTriggeredRulesList() {
+<span class="nc bnc" id="L184" title="All 4 branches missed.">        if (triggeredRules == null || triggeredRules.isEmpty()) {</span>
+<span class="nc" id="L185">            return new ArrayList&lt;&gt;();</span>
+        }
+<span class="nc" id="L187">        return new ArrayList&lt;&gt;(Arrays.asList(triggeredRules.split(&quot;,&quot;)));</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

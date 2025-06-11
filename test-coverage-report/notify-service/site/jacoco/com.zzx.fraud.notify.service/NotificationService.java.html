@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NotificationService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">notify-service</a> &gt; <a href="index.source.html" class="el_package">com.zzx.fraud.notify.service</a> &gt; <span class="el_source">NotificationService.java</span></div><h1>NotificationService.java</h1><pre class="source lang-java linenums">package com.zzx.fraud.notify.service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import com.zzx.fraud.notify.model.FraudDetectionResult;
+
+@Service
+<span class="fc" id="L10">public class NotificationService {</span>
+
+    // Changed from private static final to allow for testing/mocking
+<span class="fc" id="L13">    static Logger logger = LoggerFactory.getLogger(NotificationService.class);</span>
+<span class="fc" id="L14">    private static final Logger fraudLogger = LoggerFactory.getLogger(&quot;FRAUD_ALERTS&quot;);</span>
+
+    /**
+     * Process fraud detection results and log them
+     * 
+     * @param result Fraud detection result
+     */
+    public void processNotification(FraudDetectionResult result) {
+<span class="pc bpc" id="L22" title="1 of 2 branches missed.">        if (result == null) {</span>
+<span class="nc" id="L23">            logger.warn(&quot;Received null fraud detection result&quot;);</span>
+<span class="nc" id="L24">            return;</span>
+        }
+
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        if (result.isFraudulent()) {</span>
+            // Log fraudulent transaction to dedicated fraud log
+<span class="fc" id="L29">            logger.warn(&quot;FRAUD ALERT: Transaction {} from account {} flagged as fraudulent&quot;,</span>
+<span class="fc" id="L30">                    result.getTransactionId(), result.getAccountId());</span>
+            
+            // Log more detailed information
+<span class="fc" id="L33">            logger.warn(&quot;FRAUD DETAILS: {}&quot;, result);</span>
+            
+            // Log triggered rules
+<span class="pc bpc" id="L36" title="2 of 4 branches missed.">            if (result.getTriggeredRules() != null &amp;&amp; !result.getTriggeredRules().isEmpty()) {</span>
+<span class="fc" id="L37">                logger.warn(&quot;FRAUD RULES TRIGGERED: {} for transaction {}&quot;,</span>
+<span class="fc" id="L38">                        result.getTriggeredRules(), result.getTransactionId());</span>
+            }
+            
+            // Additional notification logic could be added here (email, SMS, etc.)
+            
+<span class="fc" id="L43">            logger.info(&quot;Processed fraud notification for transaction: {}&quot;, result.getTransactionId());</span>
+        } else {
+            // Log non-fraudulent transaction
+<span class="fc" id="L46">            logger.info(&quot;Processed non-fraudulent notification for transaction: {}&quot;, result.getTransactionId());</span>
+        }
+<span class="fc" id="L48">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

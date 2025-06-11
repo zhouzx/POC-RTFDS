@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fraud-detection-engine-config
+  namespace: fraud-detection
+data:
+  # Service port configuration
+  server.port: "8080"
+  spring.profiles.active: "prod"
+  # Fraud detection settings
+  fraud.threshold.amount: "1000.0"
+  fraud.check.suspicious.ip: "true"
+  # Notification service settings
+  notification.service.url: "http://notify-service:8081"
+  notification.service.endpoint: "/api/notifications/fraud-result"
+  notification.service.enabled: "true"
+  # Management endpoint settings
+  management.endpoints.web.exposure.include: "health,info,metrics,prometheus"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fraud-detection-engine-java-opts
+  namespace: fraud-detection
+data:
+  JAVA_OPTS: "-Xms256m -Xmx512m" 

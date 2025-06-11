@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tran-integrator-config
+  namespace: fraud-detection
+data:
+  # Service port configuration
+  server.port: "8082"
+  spring.profiles.active: "prod"
+  # Fraud detection API settings
+  fraud.detection.url: "http://fraud-detection-engine:8080/api/fraud/detect"
+  fraud.detection.connect.timeout: "5000"
+  fraud.detection.read.timeout: "5000"
+  # Lifecycle settings
+  spring.lifecycle.timeout.per.shutdown.phase: "20s"
+  # Management endpoint settings
+  management.endpoints.web.exposure.include: "health,info,metrics"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tran-integrator-java-opts
+  namespace: fraud-detection
+data:
+  JAVA_OPTS: "-Xms256m -Xmx512m"

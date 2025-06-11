@@ -1,0 +1,139 @@
+version: '3.8'
+
+services:
+  # Frontend UI
+  fraud-admin-ui:
+    build: ./fraud-admin-ui
+    container_name: fraud-admin-ui
+    ports:
+      - "80:80"
+    environment:
+      - API_BASE_URL=http://localhost:8080/api
+      - API_PROXY_URL=http://fraud-detection-engine:8080/api/
+      - APP_TITLE=Fraud Detection System
+    depends_on:
+      - fraud-detection-engine
+    restart: unless-stopped
+    networks:
+      - fraud-network
+      
+  # Fraud Detection Engine
+  fraud-detection-engine:
+    build: ./fraud-detection-engine
+    container_name: fraud-detection-engine
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_PROFILES_ACTIVE=prod
+      - JAVA_OPTS=-Xms256m -Xmx512m
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,metrics,prometheus
+      # Fraud detection settings
+      - FRAUD_THRESHOLD_AMOUNT=1000.0
+      - FRAUD_CHECK_SUSPICIOUS_IP=true
+      # Notification service settings
+      - NOTIFICATION_SERVICE_URL=http://notify-service:8081
+      - NOTIFICATION_SERVICE_ENDPOINT=/api/notifications/fraud-result
+      - NOTIFICATION_SERVICE_ENABLED=true
+    restart: unless-stopped
+    depends_on:
+      - notify-service
+    networks:
+      - fraud-network
+
+  # Notification Service
+  notify-service:
+    build: ./notify-service
+    container_name: notify-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SERVER_PORT=8081
+      - SPRING_PROFILES_ACTIVE=prod
+      - JAVA_OPTS=-Xms256m -Xmx512m
+      # Notification settings
+      - NOTIFICATION_EMAIL_ENABLED=false
+      - NOTIFICATION_SMS_ENABLED=false
+      # Fraud engine connection
+      - FRAUD_ENGINE_URL=http://fraud-detection-engine:8080
+      - FRAUD_ENGINE_ENDPOINT=/api/fraud/webhook
+      # Lifecycle settings
+      - SPRING_LIFECYCLE_TIMEOUT_PER_SHUTDOWN_PHASE=20s
+      # Management
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,metrics
+    restart: unless-stopped
+    networks:
+      - fraud-network
+
+  # Transaction Integrator
+  tran-integrator:
+    build: ./tran-integrator
+    container_name: tran-integrator
+    ports:
+      - "8082:8082"
+    environment:
+      - SERVER_PORT=8082
+      - SPRING_PROFILES_ACTIVE=prod
+      - JAVA_OPTS=-Xms256m -Xmx512m
+      # RabbitMQ settings (same as tran-simulator)
+      - RABBITMQ_HOST=rabbitmq-cn-0s64atwxg0z.cn-hangzhou.amqp-31.net.mq.amqp.aliyuncs.com
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=MjpyYWJiaXRtcS1jbi0wczY0YXR3eGcwejpMVEFJNXQ3VnBEcDV1YndTdUV2RzNTTko=
+      - RABBITMQ_PASSWORD=QTEwOTBBOUJDQTNDQjNENTg2MUM3MTUxNUNDOUUwNUM4QjBBMDkxOToxNzQ5NTY0NTU5NTE5
+      - RABBITMQ_VIRTUAL_HOST=trans
+      # Messaging settings
+      - RABBITMQ_QUEUE_NAME=transactions-queue
+      - RABBITMQ_EXCHANGE_NAME=transactions-exchange
+      - RABBITMQ_ROUTING_KEY=transactions
+      # Fraud Detection API settings
+      - FRAUD_DETECTION_URL=http://fraud-detection-engine:8080/api/fraud/detect
+      - FRAUD_DETECTION_CONNECT_TIMEOUT=5000
+      - FRAUD_DETECTION_READ_TIMEOUT=5000
+      # Lifecycle settings
+      - SPRING_LIFECYCLE_TIMEOUT_PER_SHUTDOWN_PHASE=20s
+      # Management
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,metrics
+    restart: unless-stopped
+    depends_on:
+      - fraud-detection-engine
+    networks:
+      - fraud-network
+
+  # Transaction Simulator
+  tran-simulator:
+    build: ./tran-simulator
+    container_name: tran-simulator
+    ports:
+      - "8083:8083"
+    environment:
+      - SERVER_PORT=8083
+      - SPRING_PROFILES_ACTIVE=prod
+      - JAVA_OPTS=-Xms256m -Xmx512m
+      - SIMULATOR_TRANSACTION_RATE=10
+      - SIMULATOR_FRAUD_PROBABILITY=0.05
+      - RABBITMQ_HOST=rabbitmq-cn-0s64atwxg0z.cn-hangzhou.amqp-31.net.mq.amqp.aliyuncs.com
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=MjpyYWJiaXRtcS1jbi0wczY0YXR3eGcwejpMVEFJNXQ3VnBEcDV1YndTdUV2RzNTTko=
+      - RABBITMQ_PASSWORD=QTEwOTBBOUJDQTNDQjNENTg2MUM3MTUxNUNDOUUwNUM4QjBBMDkxOToxNzQ5NTY0NTU5NTE5
+      - RABBITMQ_VIRTUAL_HOST=trans
+      - SPRING_RABBITMQ_MOCK=false
+      # Messaging settings
+      - RABBITMQ_QUEUE_NAME=transactions-queue
+      - RABBITMQ_EXCHANGE_NAME=transactions-exchange
+      - RABBITMQ_ROUTING_KEY=transactions
+      # Lifecycle settings
+      - SPRING_LIFECYCLE_TIMEOUT_PER_SHUTDOWN_PHASE=20s
+      # Management
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,metrics
+    restart: unless-stopped
+    networks:
+      - fraud-network
+
+# Shared network
+networks:
+  fraud-network:
+    driver: bridge
+
+# Persistent storage volumes
+volumes:
+  fraud-data: 

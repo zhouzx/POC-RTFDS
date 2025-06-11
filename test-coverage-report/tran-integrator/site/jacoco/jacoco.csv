@@ -1,0 +1,11 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+tran-integrator,com.zzx.fraud.integrator.model,EnhancedTransactionRequest,51,128,0,0,21,48,15,19,15,19
+tran-integrator,com.zzx.fraud.integrator.model,TransactionRequest,7,52,0,0,3,22,2,15,2,15
+tran-integrator,com.zzx.fraud.integrator.model,FraudDetectionResponse,43,23,0,0,12,10,9,5,9,5
+tran-integrator,com.zzx.fraud.integrator.config,RestTemplateConfig,12,0,0,0,5,0,2,0,2,0
+tran-integrator,com.zzx.fraud.integrator.config,RabbitMQConfig,65,0,0,0,15,0,7,0,7,0
+tran-integrator,com.zzx.fraud.integrator,TransactionIntegratorApplication,8,0,0,0,3,0,2,0,2,0
+tran-integrator,com.zzx.fraud.integrator.service,TransactionEnhancementService,8,227,5,17,4,48,6,13,1,7
+tran-integrator,com.zzx.fraud.integrator.service,TransactionConsumerService,73,0,4,0,18,0,5,0,3,0
+tran-integrator,com.zzx.fraud.integrator.service,TransactionProducerService,74,4,4,0,18,1,4,1,2,1
+tran-integrator,com.zzx.fraud.integrator.controller,IntegratorController,25,73,0,2,4,19,0,6,0,5

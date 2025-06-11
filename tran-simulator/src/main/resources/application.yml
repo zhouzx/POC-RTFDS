@@ -1,0 +1,43 @@
+server:
+  port: 8081
+  shutdown: graceful
+
+spring:
+  application:
+    name: transaction-simulator
+  
+  # RabbitMQ Configuration
+  rabbitmq:
+    host: ${RABBITMQ_HOST:rabbitmq-cn-0s64atwxg0z.cn-hangzhou.amqp-31.net.mq.amqp.aliyuncs.com}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:removed}
+    password: ${RABBITMQ_PASSWORD:removed}
+    virtual-host: ${RABBITMQ_VIRTUAL_HOST:trans}
+    mock: ${SPRING_RABBITMQ_MOCK:false}
+  
+  # Graceful shutdown
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+
+# Messaging settings
+rabbitmq:
+  queue:
+    transactions: ${RABBITMQ_QUEUE_NAME:transactions-queue}
+  exchange: ${RABBITMQ_EXCHANGE_NAME:transactions-exchange}
+  routing-key: ${RABBITMQ_ROUTING_KEY:transactions}
+
+# Actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true 

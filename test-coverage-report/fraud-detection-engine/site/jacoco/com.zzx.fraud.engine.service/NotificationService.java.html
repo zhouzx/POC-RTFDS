@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NotificationService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fraud-detection-engine</a> &gt; <a href="index.source.html" class="el_package">com.zzx.fraud.engine.service</a> &gt; <span class="el_source">NotificationService.java</span></div><h1>NotificationService.java</h1><pre class="source lang-java linenums">package com.zzx.fraud.engine.service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.zzx.fraud.engine.model.FraudDetectionResult;
+
+@Service
+<span class="nc" id="L18">public class NotificationService {</span>
+
+<span class="fc" id="L20">    private static final Logger logger = LoggerFactory.getLogger(NotificationService.class);</span>
+    
+    @Autowired
+    private RestTemplate restTemplate;
+    
+    @Autowired
+    private ObjectMapper objectMapper;
+    
+    @Value(&quot;${notification.service.url:http://localhost:8083}&quot;)
+    private String notificationServiceUrl;
+    
+    @Value(&quot;${notification.service.endpoint:/api/notifications/fraud-result}&quot;)
+    private String notificationEndpoint;
+    
+    /**
+     * Send fraud detection results to notification service
+     * 
+     * @param result Fraud detection result
+     * @return Whether sending was successful
+     */
+    public boolean sendFraudNotification(FraudDetectionResult result) {
+<span class="nc bnc" id="L41" title="All 4 branches missed.">        if (result == null || !result.isFraudulent()) {</span>
+            // Only send fraudulent transactions
+<span class="nc" id="L43">            return false;</span>
+        }
+        
+<span class="nc" id="L46">        String url = notificationServiceUrl + notificationEndpoint;</span>
+<span class="nc" id="L47">        logger.info(&quot;Sending fraud detection result to notification service: {}, URL: {}&quot;, result.getTransactionId(), url);</span>
+        
+        try {
+            // 打印JSON
+<span class="nc" id="L51">            String json = objectMapper.writeValueAsString(result);</span>
+<span class="nc" id="L52">            logger.info(&quot;Sending JSON: {}&quot;, json);</span>
+            
+<span class="nc" id="L54">            HttpHeaders headers = new HttpHeaders();</span>
+<span class="nc" id="L55">            headers.setContentType(MediaType.APPLICATION_JSON);</span>
+            
+<span class="nc" id="L57">            HttpEntity&lt;FraudDetectionResult&gt; request = new HttpEntity&lt;&gt;(result, headers);</span>
+<span class="nc" id="L58">            ResponseEntity&lt;String&gt; response = restTemplate.postForEntity(url, request, String.class);</span>
+            
+<span class="nc bnc" id="L60" title="All 2 branches missed.">            if (response.getStatusCode().is2xxSuccessful()) {</span>
+<span class="nc" id="L61">                logger.info(&quot;Fraud detection result sent successfully: {}&quot;, result.getTransactionId());</span>
+<span class="nc" id="L62">                return true;</span>
+            } else {
+<span class="nc" id="L64">                logger.warn(&quot;Fraud detection result returned non-success status code: {}, response status: {}&quot;, </span>
+<span class="nc" id="L65">                        result.getTransactionId(), response.getStatusCode());</span>
+<span class="nc" id="L66">                return false;</span>
+            }
+<span class="nc" id="L68">        } catch (Exception e) {</span>
+<span class="nc" id="L69">            logger.error(&quot;Failed to send fraud detection result: {}, error: {}&quot;, result.getTransactionId(), e.getMessage(), e);</span>
+<span class="nc" id="L70">            return false;</span>
+        }
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

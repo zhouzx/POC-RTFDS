@@ -1,0 +1,54 @@
+server:
+  port: 8082
+  shutdown: graceful
+
+spring:
+  application:
+    name: transaction-integrator
+  
+  # RabbitMQ Configuration (for receiving messages only)
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    listener:
+      simple:
+        concurrency: 3
+        max-concurrency: 5
+        prefetch: 1
+        default-requeue-rejected: false
+  
+  # Graceful shutdown
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+
+# Actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true 
+
+# Input queue configuration (for receiving messages from tran-simulator)
+rabbitmq:
+  input:
+    queue: transactions-queue
+    exchange: transactions-exchange
+    routing-key: transactions
+
+# Fraud Detection Engine REST API configuration
+fraud-detection:
+  url: http://localhost:8080/api/fraud/detect
+  connect-timeout: 5000
+  read-timeout: 5000 

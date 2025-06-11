@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransactionProducerService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tran-integrator</a> &gt; <a href="index.source.html" class="el_package">com.zzx.fraud.integrator.service</a> &gt; <span class="el_source">TransactionProducerService.java</span></div><h1>TransactionProducerService.java</h1><pre class="source lang-java linenums">package com.zzx.fraud.integrator.service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.zzx.fraud.integrator.model.EnhancedTransactionRequest;
+import com.zzx.fraud.integrator.model.FraudDetectionResponse;
+
+@Service
+<span class="nc" id="L18">public class TransactionProducerService {</span>
+<span class="fc" id="L19">    private static final Logger logger = LoggerFactory.getLogger(TransactionProducerService.class);</span>
+    
+    @Autowired
+    private RestTemplate restTemplate;
+    
+    @Value(&quot;${fraud-detection.url:http://localhost:8080/api/fraud/detect}&quot;)
+    private String fraudDetectionUrl;
+    
+    /**
+     * Send enhanced transaction data to fraud-detection-engine via RESTful API
+     * 
+     * @param enhancedTransaction Enhanced transaction request
+     * @return Fraud detection result
+     */
+    public FraudDetectionResponse sendToFraudDetectionEngine(EnhancedTransactionRequest enhancedTransaction) {
+<span class="nc" id="L34">        String url = fraudDetectionUrl;</span>
+<span class="nc" id="L35">        logger.info(&quot;Sending enhanced transaction data to fraud-detection-engine: {}, URL: {}&quot;, </span>
+<span class="nc" id="L36">                enhancedTransaction.getTransactionId(), url);</span>
+        
+        try {
+<span class="nc" id="L39">            ResponseEntity&lt;FraudDetectionResponse&gt; response = restTemplate.postForEntity(</span>
+                    url,
+                    enhancedTransaction,
+                    FraudDetectionResponse.class);
+            
+<span class="nc bnc" id="L44" title="All 2 branches missed.">            if (response.getStatusCode().is2xxSuccessful()) {</span>
+<span class="nc" id="L45">                FraudDetectionResponse fraudResponse = response.getBody();</span>
+<span class="nc" id="L46">                logger.info(&quot;Enhanced transaction data sent successfully: {}, Fraud Detection Result: {}&quot;,</span>
+<span class="nc" id="L47">                        enhancedTransaction.getTransactionId(),</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">                        fraudResponse != null ? fraudResponse.isFraudulent() : &quot;Unknown&quot;);</span>
+<span class="nc" id="L49">                return fraudResponse;</span>
+            } else {
+<span class="nc" id="L51">                logger.warn(&quot;Enhanced transaction data sent but received non-success status code: {}, Response Status: {}&quot;,</span>
+<span class="nc" id="L52">                        enhancedTransaction.getTransactionId(), response.getStatusCode());</span>
+<span class="nc" id="L53">                return null;</span>
+            }
+<span class="nc" id="L55">        } catch (Exception e) {</span>
+<span class="nc" id="L56">            logger.error(&quot;Failed to send enhanced transaction data: {}, Error: {}&quot;, </span>
+<span class="nc" id="L57">                    enhancedTransaction.getTransactionId(), e.getMessage(), e);</span>
+<span class="nc" id="L58">            return null;</span>
+        }
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

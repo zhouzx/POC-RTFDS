@@ -1,0 +1,12 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+fraud-detection-engine,com.zzx.fraud.engine.controller,FraudRuleController,158,0,6,0,41,0,14,0,11,0
+fraud-detection-engine,com.zzx.fraud.engine.controller,FraudDetectionController,0,35,0,0,0,11,0,5,0,5
+fraud-detection-engine,com.zzx.fraud.engine.model,EnhancedTransactionRequest,111,59,4,0,32,26,14,17,12,17
+fraud-detection-engine,com.zzx.fraud.engine.model,FraudDetectionResult,85,55,5,1,27,26,22,11,19,11
+fraud-detection-engine,com.zzx.fraud.engine.model,FraudDetectionResponse,35,57,1,1,8,23,6,11,5,11
+fraud-detection-engine,com.zzx.fraud.engine.model,FraudRule,48,49,0,0,19,22,9,12,9,12
+fraud-detection-engine,com.zzx.fraud.engine.service,NotificationService,95,4,6,0,20,1,5,1,2,1
+fraud-detection-engine,com.zzx.fraud.engine.service,FraudDetectionService,29,256,4,17,8,65,5,15,1,8
+fraud-detection-engine,com.zzx.fraud.engine,FraudDetectionEngineApplication,8,0,0,0,3,0,2,0,2,0
+fraud-detection-engine,com.zzx.fraud.engine.config,DataInitializer,76,0,2,0,18,0,5,0,4,0
+fraud-detection-engine,com.zzx.fraud.engine.config,RestTemplateConfig,46,0,0,0,12,0,3,0,3,0

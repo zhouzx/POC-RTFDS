@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IntegratorController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tran-integrator</a> &gt; <a href="index.source.html" class="el_package">com.zzx.fraud.integrator.controller</a> &gt; <span class="el_source">IntegratorController.java</span></div><h1>IntegratorController.java</h1><pre class="source lang-java linenums">package com.zzx.fraud.integrator.controller;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.zzx.fraud.integrator.model.EnhancedTransactionRequest;
+import com.zzx.fraud.integrator.model.FraudDetectionResponse;
+import com.zzx.fraud.integrator.model.TransactionRequest;
+import com.zzx.fraud.integrator.service.TransactionEnhancementService;
+import com.zzx.fraud.integrator.service.TransactionProducerService;
+
+@RestController
+@RequestMapping(&quot;/api/integrator&quot;)
+<span class="fc" id="L18">public class IntegratorController {</span>
+<span class="fc" id="L19">    private static final Logger logger = LoggerFactory.getLogger(IntegratorController.class);</span>
+    
+    @Autowired
+    private TransactionEnhancementService enhancementService;
+    
+    @Autowired
+    private TransactionProducerService producerService;
+    
+    @GetMapping(&quot;/health&quot;)
+    public ResponseEntity&lt;String&gt; health() {
+<span class="fc" id="L29">        return ResponseEntity.ok(&quot;Transaction Integrator is running&quot;);</span>
+    }
+    
+    /**
+     * Process transaction manually
+     * 
+     * @param transaction Transaction to process
+     * @return Processing result
+     */
+    @PostMapping(&quot;/process&quot;)
+    public ResponseEntity&lt;FraudDetectionResponse&gt; processTransaction(@RequestBody TransactionRequest transaction) {
+<span class="fc" id="L40">        logger.info(&quot;Manually processing transaction: {}&quot;, transaction.getTransactionId());</span>
+        
+        try {
+            // Enhance transaction data
+<span class="fc" id="L44">            EnhancedTransactionRequest enhancedTransaction = enhancementService.enhanceTransaction(transaction);</span>
+            
+            // Send to fraud detection engine
+<span class="fc" id="L47">            FraudDetectionResponse response = producerService.sendToFraudDetectionEngine(enhancedTransaction);</span>
+            
+<span class="fc" id="L49">            return ResponseEntity.ok(response);</span>
+<span class="fc" id="L50">        } catch (Exception e) {</span>
+<span class="fc" id="L51">            logger.error(&quot;Error processing transaction: {}&quot;, e.getMessage(), e);</span>
+<span class="fc" id="L52">            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);</span>
+        }
+    }
+    
+    /**
+     * Process enhanced transaction directly
+     * 
+     * @param enhancedTransaction Enhanced transaction to process
+     * @return Processing result
+     */
+    @PostMapping(&quot;/process-enhanced&quot;)
+    public ResponseEntity&lt;FraudDetectionResponse&gt; processEnhancedTransaction(
+            @RequestBody EnhancedTransactionRequest enhancedTransaction) {
+<span class="fc" id="L65">        logger.info(&quot;Manually processing enhanced transaction: {}&quot;, enhancedTransaction.getTransactionId());</span>
+        
+        try {
+            // Send enhanced transaction data directly to fraud-detection-engine
+<span class="fc" id="L69">            FraudDetectionResponse fraudResponse = producerService.sendToFraudDetectionEngine(enhancedTransaction);</span>
+            
+<span class="fc bfc" id="L71" title="All 2 branches covered.">            if (fraudResponse != null) {</span>
+<span class="fc" id="L72">                logger.info(&quot;Enhanced transaction processed successfully: {}, Fraud Detection Result: {}&quot;,</span>
+<span class="fc" id="L73">                        enhancedTransaction.getTransactionId(),</span>
+<span class="fc" id="L74">                        fraudResponse.isFraudulent());</span>
+<span class="fc" id="L75">                return ResponseEntity.ok(fraudResponse);</span>
+            } else {
+<span class="fc" id="L77">                logger.warn(&quot;No fraud detection result received: {}&quot;, enhancedTransaction.getTransactionId());</span>
+<span class="fc" id="L78">                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);</span>
+            }
+<span class="nc" id="L80">        } catch (Exception e) {</span>
+<span class="nc" id="L81">            logger.error(&quot;Error processing enhanced transaction: {}, Error: {}&quot;, </span>
+<span class="nc" id="L82">                    enhancedTransaction.getTransactionId(), e.getMessage(), e);</span>
+<span class="nc" id="L83">            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);</span>
+        }
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

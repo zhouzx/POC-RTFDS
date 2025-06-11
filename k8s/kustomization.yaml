@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: fraud-detection
+
+resources:
+  - namespace.yaml
+  - fraud-detection-engine-deployment.yaml
+  - notify-service-deployment.yaml
+  - tran-integrator-deployment.yaml
+  - tran-simulator-deployment.yaml
+  - fraud-admin-ui-deployment.yaml
+  - ingress-routes.yaml
+  - rabbitmq-cloud-config.yaml
+  - fraud-detection-engine-config.yaml
+  - notify-service-config.yaml
+  - tran-integrator-config.yaml
+  - tran-simulator-config.yaml
+  - fraud-admin-ui-config.yaml
+  - acr-secret-filled.yaml
+
+images:
+  - name: crpi-zb9l0odmy4zwf14t-vpc.cn-hangzhou.personal.cr.aliyuncs.com/fraud/fraud-detection-engine
+    newTag: latest
+  - name: crpi-zb9l0odmy4zwf14t-vpc.cn-hangzhou.personal.cr.aliyuncs.com/fraud/notify-service
+    newTag: latest
+  - name: crpi-zb9l0odmy4zwf14t-vpc.cn-hangzhou.personal.cr.aliyuncs.com/fraud/tran-integrator
+    newTag: latest
+  - name: crpi-zb9l0odmy4zwf14t-vpc.cn-hangzhou.personal.cr.aliyuncs.com/fraud/tran-simulator
+    newTag: latest
+  - name: crpi-zb9l0odmy4zwf14t-vpc.cn-hangzhou.personal.cr.aliyuncs.com/fraud/fraud-admin-ui
+    newTag: latest 

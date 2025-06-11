@@ -1,0 +1,85 @@
+server:
+  port: 8080
+  shutdown: graceful
+
+spring:
+  application:
+    name: fraud-detection-engine
+  
+  # Jackson Configuration
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+    deserialization:
+      fail-on-unknown-properties: false
+  
+  # H2 Database Configuration
+  datasource:
+    url: jdbc:h2:mem:frauddb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  
+  # SQL Initialization
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+      platform: h2
+  
+  # JPA Configuration
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: false
+  
+  # H2 Console Configuration
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+  
+  # Graceful shutdown
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+
+# Actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+        fraud.transaction.processing: true
+
+# Fraud detection settings
+fraud:
+  threshold:
+    amount: ${FRAUD_THRESHOLD_AMOUNT:1000.0}
+    suspicious-ip-enabled: ${FRAUD_CHECK_SUSPICIOUS_IP:true}
+
+# Notification service settings
+notification:
+  service:
+    url: ${NOTIFICATION_SERVICE_URL:http://localhost:8083}
+    endpoint: ${NOTIFICATION_SERVICE_ENDPOINT:/api/notifications/fraud-result}
+    enabled: ${NOTIFICATION_SERVICE_ENABLED:true} 

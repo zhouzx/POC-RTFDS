@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-cloud-config
+  namespace: fraud-detection
+data:
+  # 阿里云RabbitMQ服务连接信息
+  rabbitmq.host: "rabbitmq-cn-0s64atwxg0z.cn-hangzhou.amqp-31.vpc.mq.amqp.aliyuncs.com"
+  rabbitmq.port: "5672"
+  rabbitmq.virtualHost: "trans"
+  rabbitmq.queue.name: "transactions-queue"
+  rabbitmq.exchange.name: "transactions-exchange" 
+  rabbitmq.routing.key: "transactions"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rabbitmq-cloud-credentials
+  namespace: fraud-detection
+type: Opaque
+data:
+  # base64编码的用户名和密码
+  username: removed
+  password: removed 

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tran-simulator-config
+  namespace: fraud-detection
+data:
+  # Service port configuration
+  server.port: "8083"
+  spring.profiles.active: "prod"
+  # Simulator settings
+  simulator.transaction.rate: "10"
+  simulator.fraud.probability: "0.05"
+  spring.rabbitmq.mock: "false"
+  # Lifecycle settings
+  spring.lifecycle.timeout.per.shutdown.phase: "20s"
+  # Management endpoint settings
+  management.endpoints.web.exposure.include: "health,info,metrics"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tran-simulator-java-opts
+  namespace: fraud-detection
+data:
+  JAVA_OPTS: "-Xms256m -Xmx512m"

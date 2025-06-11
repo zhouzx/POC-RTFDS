@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransactionEnhancementService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tran-integrator</a> &gt; <a href="index.source.html" class="el_package">com.zzx.fraud.integrator.service</a> &gt; <span class="el_source">TransactionEnhancementService.java</span></div><h1>TransactionEnhancementService.java</h1><pre class="source lang-java linenums">package com.zzx.fraud.integrator.service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import com.zzx.fraud.integrator.model.EnhancedTransactionRequest;
+import com.zzx.fraud.integrator.model.TransactionRequest;
+
+import jakarta.annotation.PostConstruct;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.regex.Pattern;
+
+@Service
+<span class="fc" id="L17">public class TransactionEnhancementService {</span>
+<span class="fc" id="L18">    private static final Logger logger = LoggerFactory.getLogger(TransactionEnhancementService.class);</span>
+    
+    // Simple mapping of IP address to country code
+<span class="fc" id="L21">    private Map&lt;String, String&gt; ipToCountryMap = new HashMap&lt;&gt;();</span>
+    
+    // Device ID to device type mapping
+<span class="fc" id="L24">    private Map&lt;String, String&gt; deviceTypeMap = new HashMap&lt;&gt;();</span>
+    
+    // Regular expression for IP address ranges
+<span class="fc" id="L27">    private Pattern ipPattern = Pattern.compile(&quot;(\\d+\\.\\d+\\.\\d+\\.\\d+)&quot;);</span>
+    
+    // Random generator
+<span class="fc" id="L30">    private Random random = new Random();</span>
+    
+    @PostConstruct
+    public void init() {
+        // Initialize IP to country mapping
+<span class="fc" id="L35">        ipToCountryMap.put(&quot;192.168&quot;, &quot;US&quot;);</span>
+<span class="fc" id="L36">        ipToCountryMap.put(&quot;10.0&quot;, &quot;CN&quot;);</span>
+<span class="fc" id="L37">        ipToCountryMap.put(&quot;172.16&quot;, &quot;GB&quot;);</span>
+<span class="fc" id="L38">        ipToCountryMap.put(&quot;100.64&quot;, &quot;JP&quot;);</span>
+<span class="fc" id="L39">        ipToCountryMap.put(&quot;169.254&quot;, &quot;DE&quot;);</span>
+<span class="fc" id="L40">        ipToCountryMap.put(&quot;127.0&quot;, &quot;FR&quot;);</span>
+        
+        // Initialize device type mapping
+<span class="fc" id="L43">        deviceTypeMap.put(&quot;DEV&quot;, &quot;MOBILE&quot;);</span>
+<span class="fc" id="L44">        deviceTypeMap.put(&quot;PC&quot;, &quot;DESKTOP&quot;);</span>
+<span class="fc" id="L45">        deviceTypeMap.put(&quot;TAB&quot;, &quot;TABLET&quot;);</span>
+<span class="fc" id="L46">    }</span>
+    
+    /**
+     * Enhance transaction data
+     * 
+     * @param transaction Original transaction request
+     * @return Enhanced transaction request
+     */
+    public EnhancedTransactionRequest enhanceTransaction(TransactionRequest transaction) {
+<span class="fc" id="L55">        logger.info(&quot;Enhancing transaction data: {}&quot;, transaction.getTransactionId());</span>
+        
+<span class="fc" id="L57">        EnhancedTransactionRequest enhancedTransaction = new EnhancedTransactionRequest(transaction);</span>
+        
+        // Set country code
+<span class="fc" id="L60">        enhancedTransaction.setCountryCode(determineCountryCode(transaction.getIpAddress()));</span>
+        
+        // Set device type
+<span class="fc" id="L63">        enhancedTransaction.setDeviceType(determineDeviceType(transaction.getDeviceId()));</span>
+        
+        // Set transaction channel
+<span class="fc" id="L66">        enhancedTransaction.setChannel(&quot;APP&quot;);</span>
+        
+        // Randomly modify accountId with FRAUD- or BLACKLIST- prefix
+<span class="fc" id="L69">        String originalAccountId = enhancedTransaction.getAccountId();</span>
+<span class="fc" id="L70">        String modifiedAccountId = randomlyModifyAccountId(originalAccountId);</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (!originalAccountId.equals(modifiedAccountId)) {</span>
+<span class="fc" id="L72">            enhancedTransaction.setAccountId(modifiedAccountId);</span>
+<span class="fc" id="L73">            logger.info(&quot;Modified accountId from {} to {}&quot;, originalAccountId, modifiedAccountId);</span>
+        }
+        
+<span class="fc" id="L76">        logger.info(&quot;Transaction data enhancement completed: {}, Country: {}, Device Type: {}, Channel: {}&quot;,</span>
+<span class="fc" id="L77">                transaction.getTransactionId(), </span>
+<span class="fc" id="L78">                enhancedTransaction.getCountryCode(),</span>
+<span class="fc" id="L79">                enhancedTransaction.getDeviceType(), </span>
+<span class="fc" id="L80">                enhancedTransaction.getChannel());</span>
+        
+<span class="fc" id="L82">        return enhancedTransaction;</span>
+    }
+    
+    /**
+     * Randomly modify accountId with FRAUD- or BLACKLIST- prefix
+     * 
+     * @param accountId Original account ID
+     * @return Modified account ID or original if no modification
+     */
+    private String randomlyModifyAccountId(String accountId) {
+        // 10% chance to modify the accountId
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        if (random.nextInt(10) == 0) {</span>
+            // 50% chance for each prefix
+<span class="fc bfc" id="L95" title="All 2 branches covered.">            if (random.nextBoolean()) {</span>
+<span class="fc" id="L96">                return &quot;FRAUD-&quot; + accountId;</span>
+            } else {
+<span class="fc" id="L98">                return &quot;BLACKLIST-&quot; + accountId;</span>
+            }
+        }
+<span class="fc" id="L101">        return accountId;</span>
+    }
+    
+    /**
+     * Determine country code based on IP address
+     * 
+     * @param ipAddress IP address
+     * @return Country code
+     */
+    private String determineCountryCode(String ipAddress) {
+<span class="pc bpc" id="L111" title="2 of 4 branches missed.">        if (ipAddress == null || ipAddress.isEmpty()) {</span>
+<span class="nc" id="L112">            return &quot;UNKNOWN&quot;;</span>
+        }
+        
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        for (Map.Entry&lt;String, String&gt; entry : ipToCountryMap.entrySet()) {</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">            if (ipAddress.startsWith(entry.getKey())) {</span>
+<span class="fc" id="L117">                return entry.getValue();</span>
+            }
+<span class="fc" id="L119">        }</span>
+        
+        // Default return
+<span class="fc" id="L122">        return &quot;UNKNOWN&quot;;</span>
+    }
+    
+    /**
+     * Determine device type based on device ID
+     * 
+     * @param deviceId Device ID
+     * @return Device type
+     */
+    private String determineDeviceType(String deviceId) {
+<span class="pc bpc" id="L132" title="2 of 4 branches missed.">        if (deviceId == null || deviceId.isEmpty()) {</span>
+<span class="nc" id="L133">            return &quot;UNKNOWN&quot;;</span>
+        }
+        
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">        for (Map.Entry&lt;String, String&gt; entry : deviceTypeMap.entrySet()) {</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">            if (deviceId.startsWith(entry.getKey())) {</span>
+<span class="fc" id="L138">                return entry.getValue();</span>
+            }
+<span class="fc" id="L140">        }</span>
+        
+<span class="nc" id="L142">        return &quot;UNKNOWN&quot;;</span>
+    }
+    
+    /**
+     * Determine transaction channel
+     * 
+     * @param transaction Transaction request
+     * @return Channel type
+     */
+    private String determineChannel(TransactionRequest transaction) {
+        // Here we can determine the channel based on various transaction characteristics
+        // Simple example
+<span class="nc" id="L154">        return &quot;APP&quot;;</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
