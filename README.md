@@ -15,6 +15,7 @@ This is a comprehensive fraud detection system built using a microservices archi
 
 ## System Architecture
 
+For complete architecture diagrams, detailed system design, and solution rationale, please refer to the [Architecture.pptx](./Architecture.pptx) file in the root directory of this project.
 The system consists of the following microservices:
 
 ```
